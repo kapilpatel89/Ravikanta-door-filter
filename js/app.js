@@ -1342,7 +1342,6 @@ function buildA4SlipHtml(categoryTitle, itemsList, badgeTextOverride = null) {
           <td colspan="7">
             <div class="party-group-header">
               <span class="party-group-name">${escapeHtml(grp.partyName)}</span>
-              <span class="party-group-orderid">&bull;&nbsp; ORDER NO: ${escapeHtml(grp.orderId)}</span>
             </div>
           </td>
         </tr>
@@ -1822,9 +1821,8 @@ function renderProductionReportView() {
       <tr class="party-group-row">
         <td colspan="7">
           <div class="party-group-header">
-            <span class="party-group-name">${escapeHtml(party)}</span>
-            <span class="party-group-orderid">&bull;&nbsp; ORDER NO: ${escapeHtml(orderId)}</span>
-          </div>
+              <span class="party-group-name">${escapeHtml(party)}</span>
+            </div>
         </td>
       </tr>
     `;
