@@ -1,0 +1,15 @@
+# Temporary & OS files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+
+# Archive bundles
+doorfilter.zip
+
+# Editor / IDE / Logs
+node_modules/
+.vscode/
+.idea/
+*.log

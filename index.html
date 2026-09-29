@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <title>Ravikanta Doors - Production Order Slip Printing</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- ======================================================================
+       APPLICATION HEADER (Hidden during print)
+       ====================================================================== -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand-group">
+        <div class="brand-logo-icon">
+          <!-- Door Icon -->
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 20V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v14"></path>
+            <path d="M2 20h20"></path>
+            <path d="M14 12v.01"></path>
+          </svg>
+        </div>
+        <div class="brand-info">
+          <h1>
+            <span id="headerCompanyName">Ravikanta Doors</span>
+            <span class="brand-badge">A4 Production Slip</span>
+          </h1>
+          <p class="brand-subtitle" id="headerTagline">Order Categorization & Slip Generation System</p>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="app-nav">
+        <button class="nav-tab active" id="tabBtnOrders" onclick="switchView('orders')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          All Orders
+          <span class="nav-badge" id="navBadgeOrdersCount">0</span>
+        </button>
+        <button class="nav-tab" id="tabBtnWizard" onclick="switchView('wizard')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+          1-by-1 Categorizer
+          <span class="nav-badge" id="navBadgeWizardProgress">0/0</span>
+        </button>
+        <button class="nav-tab" id="tabBtnPrint" onclick="switchView('print')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+          A4 Dept Slips
+        </button>
+        <button class="nav-tab" id="tabBtnProdReport" onclick="switchView('production-report')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Production Report
+          <span class="nav-badge" id="navBadgeProdReportCount" style="background:#2563eb; color:white;">0</span>
+        </button>
+      </nav>
+
+      <!-- Quick Action Buttons -->
+      <div class="header-actions">
+        <button class="btn btn-secondary btn-sm" onclick="openCategoryModal()" title="Manage dynamic categories">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+          Categories
+        </button>
+        <button class="btn btn-secondary btn-sm" onclick="openCompanyModal()" title="Edit Company Header details">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+          Company Info
+        </button>
+        <button class="btn btn-outline-primary btn-sm" onclick="resetSampleData()" title="Reload original sample order data">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M8 16H3v5"></path></svg>
+          Reset Sample
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Protocol / Server Status Notice (Visible when opened via file://) -->
+  <div id="fileProtocolNotice" class="file-protocol-banner no-print" style="display:none;">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span>⚡ <strong>Standalone Mode:</strong></span>
+      <span id="fileProtocolStatusText">Loaded via file:// protocol. Local Storage is active.</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span style="font-size: 0.76rem; color: #222;">For disk file saving:</span>
+      <a href="http://localhost:8080" class="btn-banner-link" target="_blank">Open http://localhost:8080 🚀</a>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MAIN CONTENT CONTAINER
+       ====================================================================== -->
+  <main class="app-container">
+
+    <!-- ====================================================================
+         VIEW 1: ALL ORDERS OVERVIEW & IMPORT
+         ==================================================================== -->
+    <section id="view-orders" class="app-view active">
+      <!-- KPI Stats Grid -->
+      <div class="overview-stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon blue">📦</div>
+          <div>
+            <div class="stat-number" id="statTotalOrders">0</div>
+            <div class="stat-label">Total Orders</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon purple">🚪</div>
+          <div>
+            <div class="stat-number" id="statTotalDoors">0</div>
+            <div class="stat-label">Total Doors Qty</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon cyan" style="background:#ecfeff; color:#0891b2;">🪟</div>
+          <div>
+            <div class="stat-number" id="statTotalFrames">0</div>
+            <div class="stat-label">WPC Frames Qty</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green">✅</div>
+          <div>
+            <div class="stat-number" id="statCategorizedItems">0</div>
+            <div class="stat-label">Categorized Items</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon amber">🏷️</div>
+          <div>
+            <div class="stat-number" id="statTotalCategories">0</div>
+            <div class="stat-label">Active Categories</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Orders Table Panel -->
+      <div class="panel-card">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span>Orders List</span>
+            <span class="brand-badge" id="orderCountBadge">0 Orders</span>
+          </div>
+          <div class="panel-actions">
+            <button class="btn btn-secondary btn-sm" onclick="openImportModal()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              Import JSON
+            </button>
+            <button class="btn btn-primary btn-sm" onclick="startWizardAt(0)">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              Start 1-by-1 Categorizer
+            </button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table" id="ordersOverviewTable">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Party / Client</th>
+                <th>Order Date</th>
+                <th>Doors</th>
+                <th>WPC Frames</th>
+                <th>Size Details</th>
+                <th>Line Items</th>
+                <th>Categorization Status</th>
+                <th style="text-align: right;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="ordersOverviewTableBody">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         VIEW 2: 1-BY-1 ORDER CATEGORIZER (WIZARD)
+         ==================================================================== -->
+    <section id="view-wizard" class="app-view">
+      <!-- Stepper / Progress Card -->
+      <div class="wizard-stepper-card">
+        <div class="wizard-progress-header">
+          <div class="progress-title">
+            <span id="wizardStepCounter">Order 1 of 8</span>
+            <span class="brand-badge" id="wizardCurrentOrderTitle">RKD-22092026-136</span>
+          </div>
+          <div class="progress-stats" id="wizardOverallStats">
+            Overall Categorization: 0% complete
+          </div>
+        </div>
+
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill" id="wizardProgressBar" style="width: 12%;"></div>
+        </div>
+
+        <!-- Order Step Pills Selector -->
+        <div class="order-order-selector" id="wizardOrderPills">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- Current Order Detail Card -->
+      <div class="current-order-card">
+        <div class="order-banner-header">
+          <div class="order-title-group">
+            <h2>
+              <span id="currentOrderId">RKD-22092026-136</span>
+              <span class="order-badge-pill" id="currentOrderStatus">Confirmed</span>
+            </h2>
+            <div class="order-meta-chips">
+              <span>📅 Date: <strong id="currentOrderDate" style="color:white;">2026-09-22</strong></span>
+              <span>🚪 Total Doors: <strong id="currentOrderDoors" style="color:white;">0</strong></span>
+              <span id="currentOrderFramesChip" style="display:none; background: rgba(8, 145, 178, 0.35); padding: 2px 8px; border-radius: 4px; border: 1px solid #67e8f9;">🪟 WPC Frames: <strong id="currentOrderFrames" style="color:white;">0</strong></span>
+            </div>
+          </div>
+
+          <div class="order-party-box">
+            <div>
+              <div class="party-name-large" id="currentPartyName">AMARAT WOOD</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bulk Tools for current order -->
+        <div class="order-bulk-tools">
+          <div class="bulk-title">
+            Assign production department for each door line-item below:
+          </div>
+          <div class="bulk-actions">
+            <span style="font-size: 0.8rem; font-weight: 600; color: var(--slate-500);">Quick Assign All in this Order:</span>
+            <select id="quickAssignSelect" class="category-dropdown" style="min-width: 170px;">
+              <option value="">-- Choose Department --</option>
+            </select>
+            <button class="btn btn-secondary btn-sm" onclick="applyCategoryToCurrentOrder()">
+              Apply to All Items
+            </button>
+          </div>
+        </div>
+
+        <!-- Line Items Table -->
+        <div class="table-responsive">
+          <table class="data-table items-table" id="wizardItemsTable">
+            <thead>
+              <tr>
+                <th style="width: 40px; text-align: center;">#</th>
+                <th>Size (H×W)</th>
+                <th>Design No</th>
+                <th>Flush Door Type</th>
+                <th>Original Door Type</th>
+                <th>Thk</th>
+                <th style="text-align: center;">Qty</th>
+                <th>Notes</th>
+                <th style="min-width: 240px;">Select Department (Required)</th>
+              </tr>
+            </thead>
+            <tbody id="wizardItemsTableBody">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Dedicated WPC Frames Container (Shown only when order has frames) -->
+        <div id="wizardFramesSection" style="display:none; padding: 1.25rem 1.5rem; background: #f0fdfa; border-top: 2px dashed #99f6e4;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+            <div style="font-weight: 800; color: #0f766e; font-size: 0.95rem; display: flex; align-items: center; gap: 8px;">
+              <span>🪟 WPC Frames in this Order</span>
+              <span class="category-tag" style="background:#0d9488;" id="wizardFramesCountBadge">0 Frames</span>
+            </div>
+            <div style="font-size: 0.8rem; color: #115e59; font-weight: 600;">
+              Assign production department for frames:
+            </div>
+          </div>
+          <div class="table-responsive" style="background: white; border-radius: 6px; border: 1px solid #ccfbf1;">
+            <table class="data-table items-table" id="wizardFramesTable">
+              <thead>
+                <tr>
+                  <th style="width: 40px; text-align: center;">#</th>
+                  <th>Section</th>
+                  <th>Length / Dimensions</th>
+                  <th>Frame Type</th>
+                  <th style="text-align: center;">Qty</th>
+                  <th>Notes</th>
+                  <th style="min-width: 240px;">Select Department (Required)</th>
+                </tr>
+              </thead>
+              <tbody id="wizardFramesTableBody">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation & Validation Footer -->
+      <div class="wizard-nav-footer">
+        <div class="validation-indicator pending" id="wizardValidationIndicator">
+          <span id="validationIcon">⚠️</span>
+          <span id="validationMessage">Please assign a category to each item before proceeding to next order.</span>
+        </div>
+
+        <div class="wizard-nav-buttons">
+          <button class="btn btn-secondary" id="btnPrevOrder" onclick="navigateWizard(-1)">
+            ← Previous Order
+          </button>
+          <button class="btn btn-primary" id="btnNextOrder" onclick="navigateWizard(1)">
+            Next Order →
+          </button>
+          <button class="btn btn-success" id="btnFinishWizard" onclick="finishWizardAndPrint()">
+            Confirm & Print Slips 🖨️
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         VIEW 3: CATEGORIZED SLIPS & A4 PRINT PREVIEW
+         ==================================================================== -->
+    <section id="view-print" class="app-view">
+      <!-- Print Controls Bar (Hidden during print) -->
+      <div class="print-control-bar no-print">
+        <div class="filter-pills-row" id="printCategoryFilterPills">
+          <!-- Rendered dynamically -->
+        </div>
+
+        <div class="print-actions-group">
+          <button class="btn btn-outline-primary btn-sm" id="btnToggleSlipTheme" onclick="toggleSlipTheme()" title="Switch between Reference Image Theme (7 Columns) and Detailed Theme (11 Columns)">
+            📷 Theme: Image Style (7-Col)
+          </button>
+
+          <button class="btn btn-secondary btn-sm" onclick="switchView('production-report')" title="Open complete factory Production Report">
+            📊 Production Report
+          </button>
+
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <label for="slipDatePicker" style="font-size: 0.8rem; font-weight: 700; color: #000000;">Date:</label>
+            <input type="date" id="slipDatePicker" class="form-input" style="padding: 0.35rem 0.55rem; font-size: 0.82rem; width: auto; color: #000000; font-weight: 700; border: 1.5px solid #000000;" onchange="updateSlipDate()">
+          </div>
+
+          <button class="btn btn-secondary btn-sm" onclick="printActiveSlip()" title="Print currently selected department slip">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+            Print Selected Dept Slip
+          </button>
+
+          <button class="btn btn-primary btn-sm" onclick="printAllSlips()" title="Print all department slips, each on its own separate A4 page">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+            Print All Dept Slips (A4)
+          </button>
+        </div>
+      </div>
+
+      <!-- A4 Sheet Viewport Container -->
+      <div class="a4-preview-viewport" id="a4SlipsContainer">
+        <!-- Rendered dynamically -->
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         VIEW 4: FULL FACTORY PRODUCTION REPORT (A4 PRINT & LAST DIGITS FILTER)
+         ==================================================================== -->
+    <section id="view-production-report" class="app-view">
+      <!-- Production Report Controls Bar (Hidden during print) -->
+      <div class="print-control-bar no-print prod-report-bar">
+        <div class="prod-report-filters-group">
+          <!-- Sort ASC / DESC by Order ID Last Digits -->
+          <div class="control-subgroup">
+            <span class="control-label">Sort Last Digits:</span>
+            <div class="btn-group-toggle">
+              <button class="btn-toggle active" id="btnSortAsc" onclick="setProdReportSort('ASC')" title="Sort orders numerically ascending by last digits (e.g. 134, 135, 136)">
+                ⬆️ ASC (0→9)
+              </button>
+              <button class="btn-toggle" id="btnSortDesc" onclick="setProdReportSort('DESC')" title="Sort orders numerically descending by last digits (e.g. 136, 135, 134)">
+                ⬇️ DESC (9→0)
+              </button>
+            </div>
+          </div>
+
+          <!-- Filter using Order ID Last Digits -->
+          <div class="control-subgroup">
+            <span class="control-label">Filter Last Digits:</span>
+            <input type="text" id="prodReportLastDigitsInput" class="form-input form-input-compact" placeholder="e.g. 135" oninput="filterProductionReport()" title="Filter orders by trailing digits of Order ID">
+          </div>
+
+          <!-- Range Filter -->
+          <div class="control-subgroup">
+            <span class="control-label">Range:</span>
+            <div style="display:flex; align-items:center; gap:4px;">
+              <input type="number" id="prodReportFromDigits" class="form-input form-input-compact" style="width:72px;" placeholder="From" oninput="filterProductionReport()" title="From last digits (e.g. 100)">
+              <span style="font-weight:700;">-</span>
+              <input type="number" id="prodReportToDigits" class="form-input form-input-compact" style="width:72px;" placeholder="To" oninput="filterProductionReport()" title="To last digits (e.g. 200)">
+            </div>
+          </div>
+
+          <!-- Department Scope -->
+          <div class="control-subgroup">
+            <span class="control-label">Department:</span>
+            <select id="prodReportDeptSelect" class="form-input form-input-compact" style="min-width: 140px;" onchange="changeProdReportDept(this.value)">
+              <option value="ALL">All Departments</option>
+            </select>
+          </div>
+
+          <!-- Reset Filter Button -->
+          <button class="btn btn-secondary btn-sm" onclick="resetProdReportFilters()" title="Reset all sorting and filters">
+            🔄 Reset
+          </button>
+        </div>
+
+        <div class="print-actions-group">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <label for="prodReportDatePicker" style="font-size: 0.8rem; font-weight: 700; color: #000000;">Date:</label>
+            <input type="date" id="prodReportDatePicker" class="form-input" style="padding: 0.35rem 0.55rem; font-size: 0.82rem; width: auto; color: #000000; font-weight: 700; border: 1.5px solid #000000;" onchange="updateProdReportDate(this.value)">
+          </div>
+
+          <button class="btn btn-primary btn-sm" onclick="printProductionReport()" title="Print complete factory production report in A4">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+            Print Production Report (A4) 🖨️
+          </button>
+        </div>
+      </div>
+
+      <!-- A4 Sheet Viewport Container for Production Report -->
+      <div class="a4-preview-viewport" id="productionReportContainer">
+        <!-- Rendered dynamically -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ======================================================================
+       MODAL: CATEGORIES MANAGER
+       ====================================================================== -->
+  <div class="modal-backdrop" id="modalCategoryManager">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Dynamic Categories Management</h3>
+        <button class="btn-close-modal" onclick="closeCategoryModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="margin-bottom: 1.25rem;">
+          <h4 style="font-size: 0.9rem; font-weight: 700; margin-bottom: 0.5rem;">Existing Categories</h4>
+          <div id="categoryManagerList">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid var(--slate-200); margin: 1.25rem 0;">
+
+        <div>
+          <h4 style="font-size: 0.9rem; font-weight: 700; margin-bottom: 0.75rem;">Add New Category</h4>
+          <div class="form-group">
+            <label class="form-label">Category Name</label>
+            <input type="text" id="newCategoryName" class="form-input" placeholder="e.g. Veneer Door, Digital Door">
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Badge Color</label>
+              <input type="color" id="newCategoryColor" value="#2563eb" class="form-input" style="height: 38px; padding: 2px;">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Keywords (comma-separated)</label>
+              <input type="text" id="newCategoryKeywords" class="form-input" placeholder="e.g. veneer, teak">
+            </div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="addNewCategory()">+ Add Category</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeCategoryModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL: COMPANY PROFILE & HEADER SETTINGS
+       ====================================================================== -->
+  <div class="modal-backdrop" id="modalCompanySettings">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Company Header & GSTIN Settings</h3>
+        <button class="btn-close-modal" onclick="closeCompanyModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Company Name</label>
+          <input type="text" id="companyInputName" class="form-input">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Address Line</label>
+          <input type="text" id="companyInputAddress" class="form-input">
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label class="form-label">Phone Number</label>
+            <input type="text" id="companyInputPhone" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">GSTIN</label>
+            <input type="text" id="companyInputGstin" class="form-input">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeCompanyModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveCompanySettings()">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL: IMPORT JSON DATA
+       ====================================================================== -->
+  <div class="modal-backdrop" id="modalImportJson">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Import Orders JSON</h3>
+        <button class="btn-close-modal" onclick="closeImportModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Select JSON File from Computer</label>
+          <input type="file" id="jsonFileInput" accept=".json" class="form-input" onchange="handleFileUpload(event)">
+        </div>
+
+        <div style="text-align: center; margin: 1rem 0; color: var(--slate-400); font-weight: 600; font-size: 0.8rem;">
+          — OR PASTE JSON DIRECTLY —
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Paste Orders JSON Array</label>
+          <textarea id="jsonPasteInput" class="form-textarea" style="min-height: 140px; font-family: var(--font-mono); font-size: 0.8rem;" placeholder='[ { "id": "...", "orderNumber": "...", ... } ]'></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeImportModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="submitPastedJson()">Import Orders</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Embedded Datasets for offline file:/// mode -->
+  <script src="js/default_data.js"></script>
+  <!-- App Logic -->
+  <script src="js/app.js"></script>
+</body>
+</html>

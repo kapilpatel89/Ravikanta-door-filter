@@ -1,0 +1,105 @@
+[
+    {
+        "id": "cat-laminate",
+        "name": "Laminate Door",
+        "slug": "laminate-door",
+        "badgeColor": "#2563eb",
+        "keywords": [
+            "laminate",
+            "lam"
+        ]
+    },
+    {
+        "id": "cat-microcoating",
+        "name": "Microcoating Door",
+        "slug": "microcoating-door",
+        "badgeColor": "#7c3aed",
+        "keywords": [
+            "micro",
+            "coated",
+            "micro coating",
+            "microcoated"
+        ]
+    },
+    {
+        "id": "cat-membrane",
+        "name": "Membrane Door",
+        "slug": "membrane-door",
+        "badgeColor": "#059669",
+        "keywords": [
+            "membrane"
+        ]
+    },
+    {
+        "id": "cat-primer",
+        "name": "Primer Door",
+        "slug": "primer-door",
+        "badgeColor": "#d97706",
+        "keywords": [
+            "primer"
+        ]
+    },
+    {
+        "id": "cat-wpc-uv",
+        "name": "WPC UV Door",
+        "slug": "wpc-uv-door",
+        "badgeColor": "#dc2626",
+        "keywords": [
+            "uv",
+            "wpc",
+            "printed"
+        ]
+    },
+    {
+        "id": "cat-teak-wood",
+        "name": "Teak / Wood Door",
+        "slug": "teak-wood-door",
+        "badgeColor": "#92400e",
+        "keywords": [
+            "teak",
+            "ghana teak"
+        ]
+    },
+    {
+        "id": "cat-other",
+        "name": "Other Doors",
+        "slug": "other-doors",
+        "badgeColor": "#4b5563",
+        "keywords": []
+    },
+    {
+        "id": "cat-veneer-door",
+        "name": "Veneer Door",
+        "slug": "cat-veneer-door",
+        "badgeColor": "#2563eb",
+        "keywords": []
+    },
+    {
+        "id": "cat-uv-coated",
+        "name": "UV Coated",
+        "slug": "cat-uv-coated",
+        "badgeColor": "#2563eb",
+        "keywords": [
+            "uvcoated"
+        ]
+    },
+    {
+        "id": "cat-wpc-frame",
+        "name": "WPC Frame",
+        "slug": "wpc-frame",
+        "badgeColor": "#0891b2",
+        "keywords": [
+            "frame",
+            "wpc frame"
+        ]
+    },
+    {
+        "id": "cat-test",
+        "name": "Test",
+        "slug": "cat-test",
+        "badgeColor": "#2563eb",
+        "keywords": [
+            "test"
+        ]
+    }
+]
