@@ -1499,11 +1499,11 @@ body {
 }
 
 .col-img-idx { width: 34px; text-align: center; font-weight: 800; }
-.col-img-order-no { width: 120px; font-weight: 800; white-space: nowrap; }
+.col-img-order-no, .col-img-type { min-width: 125px; font-weight: 800; font-size: 0.72rem; text-align: left; word-break: break-word; }
 .col-img-design { width: 105px; font-weight: 800; white-space: nowrap; }
 .col-img-size { width: 110px; font-weight: 800; text-align: center; white-space: nowrap; }
 .col-img-qty { width: 55px; font-weight: 900; text-align: center; font-size: 0.88rem; }
-.col-img-finish { min-width: 120px; font-weight: 800; font-size: 0.72rem; text-align: left; word-break: break-word; }
+.col-img-finish { width: 65px; font-weight: 800; font-size: 0.76rem; text-align: center; white-space: nowrap; }
 .col-img-custom { font-size: 0.74rem; font-weight: 700; color: #000000; }
 
 /* ==========================================================================

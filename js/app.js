@@ -63,6 +63,57 @@ function getDoorFinishCode(item) {
   return 'SC';
 }
 
+// Helper: Get untaken door type between flushDoorType and doorType
+// When 1 is already taken by the department category, show the other one from JSON
+function getUntakenDoorType(item, categoryContext = '') {
+  if (item.isFrame) {
+    return item.flushDoorType || 'WPC FRAME';
+  }
+
+  const flush = (item.flushDoorType || '').trim();
+  const door = (item.doorType || '').trim();
+
+  const isDoorEmpty = (!door || door === '-' || door === '—');
+  const isFlushEmpty = (!flush || flush === '-' || flush === '—');
+
+  if (isDoorEmpty && !isFlushEmpty) return flush;
+  if (isFlushEmpty && !isDoorEmpty) return door;
+  if (isDoorEmpty && isFlushEmpty) return '—';
+
+  const ctx = (categoryContext || item.categoryName || '').toLowerCase();
+  const doorNorm = door.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const flushNorm = flush.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const ctxNorm = ctx.replace(/[^a-z0-9]/g, '');
+
+  const doorTaken = ctxNorm && (
+    ctxNorm.includes(doorNorm) || 
+    doorNorm.includes(ctxNorm) ||
+    (doorNorm.includes('laminate') && ctxNorm.includes('laminate')) ||
+    (doorNorm.includes('primer') && ctxNorm.includes('primer')) ||
+    (doorNorm.includes('membrane') && ctxNorm.includes('membrane')) ||
+    (doorNorm.includes('coating') && ctxNorm.includes('coating')) ||
+    (doorNorm.includes('micro') && ctxNorm.includes('micro')) ||
+    (doorNorm.includes('uv') && ctxNorm.includes('uv'))
+  );
+
+  if (doorTaken) {
+    return flush;
+  }
+
+  const flushTaken = ctxNorm && (
+    ctxNorm.includes(flushNorm) ||
+    flushNorm.includes(ctxNorm) ||
+    (flushNorm.includes('teak') && ctxNorm.includes('teak'))
+  );
+
+  if (flushTaken) {
+    return isDoorEmpty ? flush : door;
+  }
+
+  return flush || door || '—';
+}
+
+
 // Application State
 const state = {
   orders: [],
@@ -1342,6 +1393,7 @@ function buildA4SlipHtml(categoryTitle, itemsList, badgeTextOverride = null) {
           <td colspan="7">
             <div class="party-group-header">
               <span class="party-group-name">${escapeHtml(grp.partyName)}</span>
+              <span class="party-group-orderid">&bull;&nbsp; ORDER NO: ${escapeHtml(grp.orderId)}</span>
             </div>
           </td>
         </tr>
@@ -1354,8 +1406,9 @@ function buildA4SlipHtml(categoryTitle, itemsList, badgeTextOverride = null) {
           ? `${escapeHtml(formatSizeClean(item.dimensions))} FRAME`
           : escapeHtml(formatSizeClean(item.dimensions));
 
-        // full flush door type data
-        const flushTypeDisplay = item.flushDoorType || (item.isFrame ? "WPC FRAME" : "—");
+        // Untaken door type from JSON (in place of order id)
+        const typeDisplay = getUntakenDoorType(item, categoryTitle);
+        const finishCode = getDoorFinishCode(item);
 
         let customText = (item.notes && item.notes !== '—' && item.notes !== 'NO CHANGES') ? item.notes : '';
         if (item.hasOtherDepts && item.crossDeptSummary) {
@@ -1367,11 +1420,11 @@ function buildA4SlipHtml(categoryTitle, itemsList, badgeTextOverride = null) {
         rowsHtml += `
           <tr>
             <td class="col-img-idx">${runningIndex}</td>
-            <td class="col-img-order-no">${isFirst ? escapeHtml(grp.orderId) : '&nbsp;'}</td>
+            <td class="col-img-type">${escapeHtml(typeDisplay)}</td>
             <td class="col-img-design">${escapeHtml(item.designNo || '—')}</td>
             <td class="col-img-size">${sizeStr}</td>
             <td class="col-img-qty">${item.quantity}</td>
-            <td class="col-img-finish">${escapeHtml(flushTypeDisplay)}</td>
+            <td class="col-img-finish">${escapeHtml(finishCode)}</td>
             <td class="col-img-custom">${escapeHtml(customText)}</td>
           </tr>
         `;
@@ -1417,11 +1470,11 @@ function buildA4SlipHtml(categoryTitle, itemsList, badgeTextOverride = null) {
             </tr>
             <tr>
               <th class="col-img-idx">NO.</th>
-              <th class="col-img-order-no">ORDER NO.</th>
+              <th class="col-img-type">TYPE</th>
               <th class="col-img-design">DESIGN</th>
               <th class="col-img-size">SIZE</th>
               <th class="col-img-qty">QTY</th>
-              <th class="col-img-finish">FLUSH DOOR TYPE</th>
+              <th class="col-img-finish">SC/DC/HW</th>
               <th class="col-img-custom">COUSTAM</th>
             </tr>
           </thead>
@@ -1821,8 +1874,9 @@ function renderProductionReportView() {
       <tr class="party-group-row">
         <td colspan="7">
           <div class="party-group-header">
-              <span class="party-group-name">${escapeHtml(party)}</span>
-            </div>
+            <span class="party-group-name">${escapeHtml(party)}</span>
+            <span class="party-group-orderid">&bull;&nbsp; ORDER NO: ${escapeHtml(orderId)}</span>
+          </div>
         </td>
       </tr>
     `;
@@ -1834,8 +1888,9 @@ function renderProductionReportView() {
         ? `${escapeHtml(formatSizeClean(item.dimensions))} FRAME`
         : escapeHtml(formatSizeClean(item.dimensions));
 
-      // full flush door type data
-        const flushTypeDisplay = item.flushDoorType || (item.isFrame ? "WPC FRAME" : "—");
+      const prodDeptName = (state.prodReportDeptFilter !== 'ALL') ? (state.categories.find(c => c.id === state.prodReportDeptFilter)?.name || '') : '';
+      const typeDisplay = getUntakenDoorType(item, prodDeptName);
+      const finishCode = getDoorFinishCode(item);
 
       let customText = (item.notes && item.notes !== '—' && item.notes !== 'NO CHANGES') ? item.notes : '';
       if (item.hasOtherDepts && item.crossDeptSummary) {
@@ -1847,11 +1902,11 @@ function renderProductionReportView() {
       rowsHtml += `
         <tr>
           <td class="col-img-idx">${runningIndex}</td>
-          <td class="col-img-order-no">${isFirst ? escapeHtml(orderId) : '&nbsp;'}</td>
+          <td class="col-img-type">${escapeHtml(typeDisplay)}</td>
           <td class="col-img-design">${escapeHtml(item.designNo || '—')}</td>
           <td class="col-img-size">${sizeStr}</td>
           <td class="col-img-qty">${item.quantity}</td>
-          <td class="col-img-finish">${escapeHtml(flushTypeDisplay)}</td>
+          <td class="col-img-finish">${escapeHtml(finishCode)}</td>
           <td class="col-img-custom">${escapeHtml(customText)}</td>
         </tr>
       `;
@@ -1905,11 +1960,11 @@ function renderProductionReportView() {
           </tr>
           <tr>
             <th class="col-img-idx">NO.</th>
-            <th class="col-img-order-no">ORDER NO.</th>
+            <th class="col-img-type">TYPE</th>
             <th class="col-img-design">DESIGN</th>
             <th class="col-img-size">SIZE</th>
             <th class="col-img-qty">QTY</th>
-            <th class="col-img-finish">FLUSH DOOR TYPE</th>
+            <th class="col-img-finish">SC/DC/HW</th>
             <th class="col-img-custom">COUSTAM</th>
           </tr>
         </thead>
