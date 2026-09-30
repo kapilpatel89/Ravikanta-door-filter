@@ -1406,9 +1406,16 @@ function buildA4SlipHtml(categoryTitle, itemsList, badgeTextOverride = null) {
           ? `${escapeHtml(formatSizeClean(item.dimensions))} FRAME`
           : escapeHtml(formatSizeClean(item.dimensions));
 
-        // Untaken door type from JSON (in place of order id)
-        const typeDisplay = getUntakenDoorType(item, categoryTitle);
-        const finishCode = getDoorFinishCode(item);
+        // Door Type from JSON in place of order id
+        let doorTypeDisplay = item.doorType || '';
+        if (!doorTypeDisplay || doorTypeDisplay === '-' || doorTypeDisplay === '—') {
+          doorTypeDisplay = item.categoryName && item.categoryName !== 'Uncategorized' ? item.categoryName : '—';
+        }
+        if (item.isFrame) {
+          doorTypeDisplay = item.doorType || 'WPC FRAME';
+        }
+        // Full flush door type in Column 6 (keep updated latest one)
+        const flushTypeDisplay = item.flushDoorType || (item.isFrame ? "WPC FRAME" : "—");
 
         let customText = (item.notes && item.notes !== '—' && item.notes !== 'NO CHANGES') ? item.notes : '';
         if (item.hasOtherDepts && item.crossDeptSummary) {
@@ -1420,11 +1427,11 @@ function buildA4SlipHtml(categoryTitle, itemsList, badgeTextOverride = null) {
         rowsHtml += `
           <tr>
             <td class="col-img-idx">${runningIndex}</td>
-            <td class="col-img-type">${escapeHtml(typeDisplay)}</td>
+            <td class="col-img-type">${escapeHtml(doorTypeDisplay)}</td>
             <td class="col-img-design">${escapeHtml(item.designNo || '—')}</td>
             <td class="col-img-size">${sizeStr}</td>
             <td class="col-img-qty">${item.quantity}</td>
-            <td class="col-img-finish">${escapeHtml(finishCode)}</td>
+            <td class="col-img-finish">${escapeHtml(flushTypeDisplay)}</td>
             <td class="col-img-custom">${escapeHtml(customText)}</td>
           </tr>
         `;
@@ -1470,11 +1477,11 @@ function buildA4SlipHtml(categoryTitle, itemsList, badgeTextOverride = null) {
             </tr>
             <tr>
               <th class="col-img-idx">NO.</th>
-              <th class="col-img-type">TYPE</th>
+              <th class="col-img-type">DOOR TYPE</th>
               <th class="col-img-design">DESIGN</th>
               <th class="col-img-size">SIZE</th>
               <th class="col-img-qty">QTY</th>
-              <th class="col-img-finish">SC/DC/HW</th>
+              <th class="col-img-finish">FLUSH DOOR TYPE</th>
               <th class="col-img-custom">COUSTAM</th>
             </tr>
           </thead>
@@ -1888,9 +1895,17 @@ function renderProductionReportView() {
         ? `${escapeHtml(formatSizeClean(item.dimensions))} FRAME`
         : escapeHtml(formatSizeClean(item.dimensions));
 
-      const prodDeptName = (state.prodReportDeptFilter !== 'ALL') ? (state.categories.find(c => c.id === state.prodReportDeptFilter)?.name || '') : '';
-      const typeDisplay = getUntakenDoorType(item, prodDeptName);
-      const finishCode = getDoorFinishCode(item);
+      // Door Type from JSON in place of order id
+      let doorTypeDisplay = item.doorType || '';
+      if (!doorTypeDisplay || doorTypeDisplay === '-' || doorTypeDisplay === '—') {
+        const catObj = item.categoryId ? state.categories.find(c => c.id === item.categoryId) : null;
+        doorTypeDisplay = catObj ? catObj.name : '—';
+      }
+      if (item.isFrame) {
+        doorTypeDisplay = item.doorType || 'WPC FRAME';
+      }
+      // Full flush door type in Column 6 (keep updated latest one)
+      const flushTypeDisplay = item.flushDoorType || (item.isFrame ? "WPC FRAME" : "—");
 
       let customText = (item.notes && item.notes !== '—' && item.notes !== 'NO CHANGES') ? item.notes : '';
       if (item.hasOtherDepts && item.crossDeptSummary) {
@@ -1902,11 +1917,11 @@ function renderProductionReportView() {
       rowsHtml += `
         <tr>
           <td class="col-img-idx">${runningIndex}</td>
-          <td class="col-img-type">${escapeHtml(typeDisplay)}</td>
+          <td class="col-img-type">${escapeHtml(doorTypeDisplay)}</td>
           <td class="col-img-design">${escapeHtml(item.designNo || '—')}</td>
           <td class="col-img-size">${sizeStr}</td>
           <td class="col-img-qty">${item.quantity}</td>
-          <td class="col-img-finish">${escapeHtml(finishCode)}</td>
+          <td class="col-img-finish">${escapeHtml(flushTypeDisplay)}</td>
           <td class="col-img-custom">${escapeHtml(customText)}</td>
         </tr>
       `;
@@ -1960,11 +1975,11 @@ function renderProductionReportView() {
           </tr>
           <tr>
             <th class="col-img-idx">NO.</th>
-            <th class="col-img-type">TYPE</th>
+            <th class="col-img-type">DOOR TYPE</th>
             <th class="col-img-design">DESIGN</th>
             <th class="col-img-size">SIZE</th>
             <th class="col-img-qty">QTY</th>
-            <th class="col-img-finish">SC/DC/HW</th>
+            <th class="col-img-finish">FLUSH DOOR TYPE</th>
             <th class="col-img-custom">COUSTAM</th>
           </tr>
         </thead>
