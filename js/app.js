@@ -1417,11 +1417,7 @@ function buildA4SlipHtml(categoryTitle, itemsList, badgeTextOverride = null) {
         // Full flush door type in Column 6 (keep updated latest one)
         const flushTypeDisplay = item.flushDoorType || (item.isFrame ? "WPC FRAME" : "—");
 
-        let customText = (item.notes && item.notes !== '—' && item.notes !== 'NO CHANGES') ? item.notes : '';
-        if (item.hasOtherDepts && item.crossDeptSummary) {
-          if (customText) customText += ` (With: ${item.crossDeptSummary})`;
-          else customText = `With: ${item.crossDeptSummary}`;
-        }
+        let customText = (item.notes && item.notes !== '—' && item.notes !== '-') ? item.notes.trim() : '';
         if (!customText) customText = '~';
 
         rowsHtml += `
@@ -1907,12 +1903,8 @@ function renderProductionReportView() {
       // Full flush door type in Column 6 (keep updated latest one)
       const flushTypeDisplay = item.flushDoorType || (item.isFrame ? "WPC FRAME" : "—");
 
-      let customText = (item.notes && item.notes !== '—' && item.notes !== 'NO CHANGES') ? item.notes : '';
-      if (item.hasOtherDepts && item.crossDeptSummary) {
-        if (customText) customText += ` (With: ${item.crossDeptSummary})`;
-        else customText = `With: ${item.crossDeptSummary}`;
-      }
-      if (!customText) customText = '~';
+      let customText = (item.notes && item.notes !== '—' && item.notes !== '-') ? item.notes.trim() : '';
+        if (!customText) customText = '~';
 
       rowsHtml += `
         <tr>
