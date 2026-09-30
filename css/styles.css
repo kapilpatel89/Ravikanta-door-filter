@@ -1038,6 +1038,11 @@ body {
 .slip-table tbody {
   display: table-row-group !important;
 }
+.slip-table tbody td {
+  font-size: 0.75rem !important;
+  font-weight: 800 !important;
+  line-height: 1.25 !important;
+}
 
 .slip-table tr {
   page-break-inside: avoid !important;
@@ -1062,9 +1067,9 @@ body {
 .slip-table thead th {
   border-top: 1.5px solid #000000 !important;
   background: #f1f5f9 !important;
-  font-weight: 800;
+  font-weight: 800 !important;
+  font-size: 0.75rem !important;
   text-align: left;
-  font-size: 0.74rem;
   color: #000000 !important;
 }
 
@@ -1455,16 +1460,16 @@ body {
 }
 
 .party-group-name {
-  font-size: 0.82rem;
-  font-weight: 900;
-  letter-spacing: 0.05em;
+  font-size: 0.76rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   color: #000000 !important;
 }
 
 .party-group-orderid {
-  font-size: 0.76rem;
-  font-weight: 800;
+  font-size: 0.76rem !important;
+  font-weight: 800 !important;
   color: #000000 !important;
   letter-spacing: 0.02em;
 }
@@ -1498,13 +1503,13 @@ body {
   color: #000000 !important;
 }
 
-.col-img-idx { width: 34px; text-align: center; font-weight: 800; }
-.col-img-order-no, .col-img-type { min-width: 110px; max-width: 145px; font-weight: 800; font-size: 0.72rem; text-align: left; word-break: break-word; }
-.col-img-design { width: 105px; font-weight: 800; white-space: nowrap; }
-.col-img-size { width: 110px; font-weight: 800; text-align: center; white-space: nowrap; }
-.col-img-qty { width: 55px; font-weight: 900; text-align: center; font-size: 0.88rem; }
-.col-img-finish { min-width: 120px; font-weight: 800; font-size: 0.72rem; text-align: left; word-break: break-word; }
-.col-img-custom { font-size: 0.74rem; font-weight: 700; color: #000000; }
+.col-img-idx { width: 34px; text-align: center; font-weight: 800 !important; font-size: 0.75rem !important; }
+.col-img-order-no, .col-img-type { min-width: 110px; max-width: 145px; font-weight: 800 !important; font-size: 0.75rem !important; text-align: left; word-break: break-word; text-transform: uppercase; }
+.col-img-design { width: 105px; font-weight: 800 !important; font-size: 0.75rem !important; text-align: left; white-space: nowrap; }
+.col-img-size { width: 105px; font-weight: 800 !important; font-size: 0.75rem !important; text-align: center; white-space: nowrap; }
+.col-img-qty { width: 50px; font-weight: 800 !important; font-size: 0.75rem !important; text-align: center; }
+.col-img-finish { min-width: 120px; font-weight: 800 !important; font-size: 0.75rem !important; text-align: left; word-break: break-word; text-transform: uppercase; }
+.col-img-custom { font-size: 0.75rem !important; font-weight: 800 !important; text-align: left; color: #000000 !important; }
 
 /* ==========================================================================
    A4 PRINT SPECIFIC RULES (@media print)
@@ -1661,8 +1666,9 @@ body {
     color: #000000 !important;
     background-clip: padding-box !important;
     padding: 3.5px 5px !important;
-    font-size: 0.72rem !important;
-    line-height: 1.15 !important;
+    font-size: 0.75rem !important;
+    font-weight: 800 !important;
+    line-height: 1.2 !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
